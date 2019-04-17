@@ -83,32 +83,32 @@ exports.delete = (req, res) => {
 
 };
 
-// Update a note identified by the noteId in the request
+// Update a Data identified by the Id in the request
 exports.update = (req, res) => {
 	// Validate Request
     if(!req.body) {
         return res.status(400).send({
-            message: "Note content can not be empty"
+            message: "Data content can not be empty"
         });
     }
 
-    // Find note and update it with the request body
+    // Find Data and update it with the request body
     Users.User.findOneAndUpdate({'user_id':req.params.id}, {$set: req.body}, {new: true})
-    .then(note => {
-        if(!note) {
+    .then(updateddata => {
+        if(!updateddata) {
             return res.status(404).send({
-                message: "Note not found with id " + req.params.id
+                message: "Data not found with id " + req.params.id
             });
         }
-        res.send(note);
+        res.send(updateddata);
     }).catch(err => {
         if(err.kind === 'ObjectId') {
             return res.status(404).send({
-                message: "Note not found with id " + req.params.id
+                message: "Data not found with id " + req.params.id
             });                
         }
         return res.status(500).send({
-            message: "Error updating note with id " + req.params.id
+            message: "Error updating Data with id " + req.params.id
         });
     });
 };
