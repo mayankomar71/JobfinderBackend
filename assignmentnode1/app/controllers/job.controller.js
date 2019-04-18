@@ -4,7 +4,7 @@ var myenum = require('./enum');
 
 exports.create=(req, res)=>{
     if (!req.body) {
-        return res.send({ message: "Cannot be empty" });
+        return res.send({ message: "Cannot be empty data" });
     }
     jobs.User.find({'user_id':req.params.id})
     .then(response=>{
@@ -14,7 +14,7 @@ exports.create=(req, res)=>{
             company_name:req.body.company_name,
             loc:response[0].loc
         })
-        if(response[0].role==myenum.admin){
+        if(response[0].role==myenum.roles.admin){
             data.save((err,respo)=>{
                 if(err){
                     console.log(err);
@@ -24,7 +24,7 @@ exports.create=(req, res)=>{
                 }
             })
         }
-        else if(response[0].role==myenum.company){
+        else if(response[0].role==myenum.roles.company){
             data.save((err,respo)=>{
                 if(err){
                     console.log(err);
@@ -43,27 +43,29 @@ exports.create=(req, res)=>{
 }
 
 exports.findAll = (req, res) => {
-    jobs.job.find((err, data) => {
+    jobs.job.find((err, response) => {
         if (err) {
-            console.log(err);
+            res.status(404).send({
+                message: err.message || "Some error occured while Fetching Data From database"
+            });
         }
         else {
-            res.send(data);
+            res.send(response)
         }
     })
 
-}
+};
 
 exports.deleteOne = (req, res) => {
     jobs.job.findOneAndDelete({ 'job_id': req.params.id }, (err, response) => {
         if (!response) {
-            res.send({ message: "no such data" });
+            res.send({ message: "no such data exist in databse" });
         }
         else if (err) {
             console.log(err);
         }
         else {
-            res.send({ Message: "doc deleted successfully" });
+            res.send({ Message: "Data deleted successfully" });
         }
     })
 }
@@ -71,7 +73,7 @@ exports.deleteOne = (req, res) => {
 exports.update = (req, res) => {
     if (!req.body) {
         return res.send({
-            message: "Note content can not be empty"
+            message: "Data content can not be empty"
         });
     }
 

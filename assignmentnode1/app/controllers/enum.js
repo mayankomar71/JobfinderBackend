@@ -3,5 +3,15 @@ const roles= {
 "user":2,
 "company":3
 }
-Object.freeze(roles);
-module.exports=roles;
+const status={
+    "applied":1,
+    "shortlisted":2,
+    "rejected":3
+
+}
+module.exports={
+    roles:roles,
+    jobstatus:status
+
+}
+

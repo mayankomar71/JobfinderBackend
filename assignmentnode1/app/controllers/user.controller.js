@@ -11,7 +11,7 @@ exports.create = (req, res) => {
         });
     }
     let role = req.body.role;
-    role = myenum[role];
+    role = myenum.roles[role];
 
     const newUser = new Users.User({
         user_id: req.body.user_id,
