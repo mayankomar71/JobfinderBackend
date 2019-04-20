@@ -1,4 +1,5 @@
-var jobs=require('../models/model.js');
+var jobs=require('../models/jobmodel');
+const Users = require('../models/usermodel');
 var myenum = require('./enum');
 
 
@@ -6,9 +7,9 @@ exports.create=(req, res)=>{
     if (!req.body) {
         return res.send({ message: "Cannot be empty data" });
     }
-    jobs.User.find({'user_id':req.params.id})
+    Users.find({'user_id':req.params.id})
     .then(response=>{
-        const data= new jobs.job({
+        const data= new jobs({
             job_id:req.body.job_id,
             job_description:req.body.job_description,
             company_name:req.body.company_name,
@@ -43,7 +44,7 @@ exports.create=(req, res)=>{
 }
 
 exports.findAll = (req, res) => {
-    jobs.job.find((err, response) => {
+    jobs.find((err, response) => {
         if (err) {
             res.status(404).send({
                 message: err.message || "Some error occured while Fetching Data From database"
@@ -57,7 +58,7 @@ exports.findAll = (req, res) => {
 };
 
 exports.deleteOne = (req, res) => {
-    jobs.job.findOneAndDelete({ 'job_id': req.params.id }, (err, response) => {
+    jobs.findOneAndDelete({ 'job_id': req.params.id }, (err, response) => {
         if (!response) {
             res.send({ message: "no such data exist in databse" });
         }
@@ -77,7 +78,7 @@ exports.update = (req, res) => {
         });
     }
 
-    jobs.job.findOneAndUpdate({ 'job_id': req.params.id }, { $set: req.body }, { new: true }, (err, response) => {
+    jobs.findOneAndUpdate({ 'job_id': req.params.id }, { $set: req.body }, { new: true }, (err, response) => {
         if (err) {
             console.log(err);
         }

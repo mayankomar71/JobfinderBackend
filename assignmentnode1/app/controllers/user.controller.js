@@ -1,4 +1,4 @@
-const Users = require('../models/model.js');
+const Users = require('../models/usermodel');
 const myenum = require('./enum')
 
 // Create and Save a new Trainee
@@ -13,7 +13,7 @@ exports.create = (req, res) => {
     let role = req.body.role;
     role = myenum.roles[role];
 
-    const newUser = new Users.User({
+    const newUser = new Users({
         user_id: req.body.user_id,
         name: req.body.name,
         email: req.body.email,
@@ -37,7 +37,7 @@ exports.create = (req, res) => {
 
 // Retrieve and return all data from the database.
 exports.findAll = (req, res) => {
-    Users.User.find((err, response) => {
+    Users.find((err, response) => {
         if (err) {
             res.status(404).send({
                 message: err.message || "Some error occured while Fetching Data From database"
@@ -51,7 +51,7 @@ exports.findAll = (req, res) => {
 };
 
 exports.findOne = (req, res) => {
-    Users.User.findOne({ 'name': req.params.name }, (err, response) => {
+    Users.findOne({ 'name': req.params.name }, (err, response) => {
         if (err) {
             res.status(404).send({
                 message: err.message || "Some error occured while Fetching Data From database"
@@ -67,7 +67,7 @@ exports.findOne = (req, res) => {
 
 
 exports.delete = (req, res) => {
-    Users.User.findOneAndDelete({ 'user_id': req.params.id }, (err, response) => {
+    Users.findOneAndDelete({ 'user_id': req.params.id }, (err, response) => {
         if (err) {
             res.status(404).send({
                 message: err.message || "Some error occured while Deleting Data From database"
@@ -93,7 +93,7 @@ exports.update = (req, res) => {
     }
 
     // Find Data and update it with the request body
-    Users.User.findOneAndUpdate({'user_id':req.params.id}, {$set: req.body}, {new: true})
+    Users.findOneAndUpdate({'user_id':req.params.id}, {$set: req.body}, {new: true})
     .then(updateddata => {
         if(!updateddata) {
             return res.status(404).send({

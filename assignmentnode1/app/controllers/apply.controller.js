@@ -1,4 +1,5 @@
-var jobapply = require('../models/model')
+var jobapply = require('../models/applymodel')
+const Users = require('../models/usermodel');
 var jobenum = require('./enum');
 
 exports.create = (req, res) => {
@@ -6,7 +7,7 @@ exports.create = (req, res) => {
         return res.send({ message: "Cannot be empty" });
     }
     status=jobenum.jobstatus.applied
-    const data = new jobapply.apply({
+    const data = new jobapply({
         user_id:req.params.id,
         job_id:req.body.job_id,
         company_name:req.body.company_name,
@@ -26,14 +27,14 @@ exports.create = (req, res) => {
     })
 }
 exports.findOne = (req, res) => {
-    jobapply.apply.findOne({ 'user_id': req.params.id }, (error1, response) => {
+    jobapply.findOne({ 'user_id': req.params.id }, (error1, response) => {
         if (error1) {
             res.status(404).send({
                 message: err.message || "Some error occured while Fetching Data From database"
             });
         }
         else {
-           jobapply.User.findOne({'user_id':req.params.id},(error2,response1)=>
+           Users.findOne({'user_id':req.params.id},(error2,response1)=>
            {
                if(error2)
                {
@@ -61,7 +62,7 @@ exports.update = (req, res) => {
 
     // Find Data and update it with the request body
     
-    jobapply.apply.findOneAndUpdate({'user_id':req.params.id}, {$set: req.body}, {new: true})
+    jobapply.findOneAndUpdate({'user_id':req.params.id}, {$set: req.body}, {new: true})
     .then(updateddata => {
         if(!updateddata) {
             return res.status(404).send({
