@@ -1,6 +1,6 @@
 var jobapply = require('../models/applymodel')
 const Users = require('../models/usermodel');
-var jobenum = require('./enum');
+var jobenum = require('../enum');
 var jobs = require('../models/jobmodel')
 
 exports.create = (req, res) => {

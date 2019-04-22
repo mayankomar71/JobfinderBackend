@@ -1,6 +1,6 @@
 var jobs=require('../models/jobmodel');
 const Users = require('../models/usermodel');
-var myenum = require('./enum');
+var myenum = require('../enum');
 
 
 exports.create=(req, res)=>{

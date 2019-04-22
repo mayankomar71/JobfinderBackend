@@ -1,5 +1,5 @@
 const Users = require('../models/usermodel');
-const myenum = require('./enum')
+const myenum = require('../enum')
 
 // Create and Save a new Trainee
 exports.create = (req, res) => {
