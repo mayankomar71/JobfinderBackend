@@ -28,10 +28,14 @@ module.exports = (app) => {
     app.delete('/jobupdate/:id', job.deleteOne);
 
     app.post('/apply/:id',apply.create)
+    //to see available jobs
+    app.get('/jobs/:id',apply.displayjobs)
 
     app.get('/applied/:id',apply.findOne)
+
+    app.get('/applied/:companyname',apply.findAll)
     
-    app.put('/applyedit/:id',apply.update)
+    app.put('/applyedit/:company_id/:user_id',apply.update_status)
     
 
 }

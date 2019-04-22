@@ -7,10 +7,11 @@ const Users = mongoose.Schema({
     mobile:{type: Number, required: true},
     role:{type:Number,required:true},
     loc: {
-        type: { type: Number },
+        type: { type: String },
         coordinates: []
     }
 },{ versionKey: false });
+Users.index({loc:"2dsphere"})
 
 module.exports=mongoose.model('users', Users)
 

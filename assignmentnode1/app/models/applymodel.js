@@ -6,4 +6,5 @@ const apply = mongoose.Schema({
     company_name:{type:String,required:true},
     
 },{ versionKey: false });
+
 module.exports=mongoose.model('Apply',apply)
