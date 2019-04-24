@@ -1,17 +1,11 @@
 var mongoose = require('mongoose');
-var imageModel = mongoose.Schema({
-	url: {
-		type: String,
-		required: true
-	},
-	fileName : {
-		type: String,
-		require: true
-	},
-	imageType: {
-		type: Number,
-		required: true
-	}
+var Schema = mongoose.Schema;
 
-},{ versionKey: false });
-module.exports=mongoose.model('imageModel',imageModel)
+var imageSchema = new Schema({
+	url: { type: String, required: true },
+	fileName: { type: String, require: true },
+});
+
+var fileModel = mongoose.model('imageModel', imageSchema);
+
+module.exports = fileModel;

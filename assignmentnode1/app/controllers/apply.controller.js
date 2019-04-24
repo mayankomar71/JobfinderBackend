@@ -3,45 +3,68 @@ const Users = require('../models/usermodel');
 var jobenum = require('../enum');
 var jobs = require('../models/jobmodel')
 
-exports.create = (req, res) => {
+exports.applyjobs = (req, res) => {
     if (!req.body) {
         return res.send({ message: "Cannot be empty" });
     }
     status = jobenum.jobstatus.applied
-    const data = new jobapply({
-        user_id: req.params.id,
-        job_id: req.body.job_id,
-        company_name: req.body.company_name,
-        job_status: status
+    Users.findOne({ 'user_id': req.params.id }).then((response)=>
+    {
+        if (response.role == jobenum.roles.user)
+            {
+                const data = new jobapply({
+                    user_id: req.params.id,
+                    job_id: req.body.job_id,
+                    company_name: req.body.company_name,
+                    job_status: status
+            
+                })
+                data.save().then((response2)=>
+                {
+                    res.json(response2)
+                })
+            }
+            else{
+                res.json({ message: 'Please enter valid user id' });
 
+            }
+           
+           
+
+    }).catch((err)=>
+    {
+        res.json({ message: 'Please enter valid user id' })
     })
-    data.save((err, response) => {
-        if (err) {
-            res.send("Data insertion  Error")
-        }
-        else {
-            res.json(response)
-        }
-    })
+  
+   
 }
 exports.displayjobs = (req, res) => {
 
     Users.findOne({ 'user_id': req.params.id })
         .then((response) => {
-            let userLocation = response.loc;
-            return jobs.find({
-                'loc': {
-                    $near: {
-                        $geometry: userLocation,
-                        $minDistance: 6000
+            if (response.role == jobenum.roles.user)
+            {
+                let userLocation = response.loc;
+                return jobs.find({
+                    'loc': {
+                        $near: {
+                            $geometry: userLocation,
+                            $minDistance: 4000
+                        }
                     }
-                }
+                })
+            }
+            else {
+                res.json({ message: 'please enter valid userid' });
+            }
+            }).then(response => {
+                res.json(response);
+            }).catch((err) => {
+                res.json({ message: 'Please enter valid user id' })
             })
-        }).then(response => {
-            res.json(response);
-        }).catch((err) => {
-            console.log(err);
-        })
+
+        
+         
 }
 
 exports.findOne = (req, res) => {
@@ -95,7 +118,7 @@ exports.update_status = (req, res) => {
                 let job_status = req.body.job_status;
                 let changedStatus = jobenum.jobstatus[job_status];
 
-                jobapply.findOneAndUpdate({ 'user_id': req.params.user_id }, { $set: { job_status: changedStatus } }, { new: true }, (err, response2) => {
+                jobapply.findOneAndUpdate({ 'user_id': req.params.user_id ,'company_name':req.body.company_name}, { $set: { job_status: changedStatus } }, { new: true }, (err, response2) => {
                     if (err) {
                         res.status(404).send({
                             message: err.message || "Some error occured while Updating Status"
@@ -113,10 +136,4 @@ exports.update_status = (req, res) => {
             console.log(err);
         });
 }
-//
-// exports.locations=(req,res)=>
-// {
-//     var maxDistance = 10; // Distance in Kilometers
-//     maxDistance /= 111.12; //6371; // Convert to radians
 
-// }
