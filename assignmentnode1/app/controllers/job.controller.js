@@ -4,58 +4,80 @@ var myenum = require('../enum');
 
 
 exports.create=(req, res)=>{
-    if (!req.body) {
-        return res.send({ message: "Cannot be empty data" });
-    }
-    Users.find({'user_id':req.params.id})
-    .then(response=>{
-        const data= new jobs({
-            job_id:req.body.job_id,
-            job_description:req.body.job_description,
+  
+        const newjob= new jobs({
+            job_designation:req.body.job_designation,
             company_name:req.body.company_name,
-            loc:response[0].loc
+            salary:req.body.salary,
+            city:req.body.city,
+            skills:req.body.tags
         })
-        if(response[0].role==myenum.roles.admin){
-            data.save((err,respo)=>{
-                if(err){
-                    console.log(err);
+    
+            newjob.save((err, response) => {
+                if (err) {
+                    res.status(500).send({
+                        message: err.message || "Some error occured while Posting Data to database"
+                    });
                 }
-                else{
-                    res.send(respo);
-                }
-            })
-        }
-        else if(response[0].role==myenum.roles.company){
-            data.save((err,respo)=>{
-                if(err){
-                    console.log(err);
-                }
-                else{
-                    res.send(respo);
+                else {
+                    res.send(response)
                 }
             })
         }
-        else{
-            res.send({message:'user cannot add job'});
-        }
-    }).catch(err=>{
-        res.send({message:err});
-    })
-}
+       
+   
+
 
 exports.findAll = (req, res) => {
-    jobs.find((err, response) => {
+    var pageNo = req.params.page;
+    var size = 4;
+    jobs.count({}, (err, total) => {
+    if (err) 
+    {
+            res.json({ 'message': err });
+        
+    }
+    jobs.find({},(err, data) => {
         if (err) {
             res.status(404).send({
                 message: err.message || "Some error occured while Fetching Data From database"
             });
         }
         else {
-            res.send(response)
+            var pages = Math.ceil(total / size);
+            console.log(total);
+            res.json({ 'message':data, 'page': pages })
+            // res.send(response)
         }
-    })
+    }).limit(size).skip(size * (pageNo - 1))
+})
+}
+exports.company_jobs=(req,res)=>
+{
+    var pageNo = req.params.page;
+    var size = 4;
+    jobs.count({ 'company_name': req.params.company }, (err, total) => {
 
-};
+    if (err) {
+            res.json({ 'message': err });
+        }
+
+    jobs.find({'company_name':req.params.company}).limit(size).skip(size * (pageNo - 1))
+    .then((data)=>
+    {
+        // res.send(response)
+        var pages = Math.ceil(total / size);
+        console.log(total);
+        res.json({ 'message':data, 'page': pages })
+
+    }).catch((err)=>
+    {
+        res.status(404).send({
+            message: err.message || "Some error occured while Fetching Data From database"
+        });
+    })
+})
+}
 
 exports.deleteOne = (req, res) => {
     jobs.findOneAndDelete({ 'job_id': req.params.id }, (err, response) => {
@@ -74,11 +96,11 @@ exports.deleteOne = (req, res) => {
 exports.update = (req, res) => {
     if (!req.body) {
         return res.send({
-            message: "Data content can not be empty"
+            message: "Note content can not be empty"
         });
     }
 
-    jobs.findOneAndUpdate({ 'job_id': req.params.id }, { $set: req.body }, { new: true }, (err, response) => {
+    jobs.update({ '_id': req.body.id }, { $set: req.body }, { new: true }, (err, response) => {
         if (err) {
             console.log(err);
         }

@@ -15,7 +15,6 @@ exports.postImage = (req, res) => {
         const data = new image({
             url: filepath,
             fileName: file_name
-
         })
         data.save().then((response) => {
             res.json("Done File uploading")
@@ -32,7 +31,7 @@ exports.postImage = (req, res) => {
 }
 exports.base64upload = function (req, res) {
     var base64Data = req.body.image.replace(/^data:image\/(?:jpeg|jpg|JPEG|JPG|png|PNG);base64,/, "");
-     var imgData = req.body.image
+    var imgData = req.body.image
     var filename = RandomString.generate(7)
     const type = imgData.substring(imgData.indexOf('/') + 1,imgData.indexOf(';base64'))
     console.log(type)

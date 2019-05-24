@@ -14,13 +14,14 @@ exports.create = (req, res) => {
     role = myenum.roles[role];
 
     const newUser = new Users({
-        user_id: req.body.user_id,
         name: req.body.name,
         email: req.body.email,
         mobile: req.body.mobile,
+        password:req.body.password,
         role: role,
-        loc: req.body.loc
+        skills:req.body.tags
     });
+    
     newUser.save((err, response) => {
         if (err) {
             res.status(500).send({
@@ -44,23 +45,32 @@ exports.findAll = (req, res) => {
             });
         }
         else {
-            res.send(response)
+            res.json(response)
         }
     })
 
 };
 
 exports.findOne = (req, res) => {
-    Users.findOne({ 'name': req.params.name }, (err, response) => {
+    if(req.body==={})
+    {
+        return res.status(400).send({
+            message: "Data content can not be empty"
+        });
+
+    }
+    const data = Users.findOne({ 'email': req.body.email,'password':req.body.password }, (err, response) => {
         if (err) {
-            res.status(404).send({
+            console.log(data)
+            res.status(404).json({
                 message: err.message || "Some error occured while Fetching Data From database"
             });
         }
-        else {
-            res.send(response)
 
+        else if(response) {
+            res.send(response)
         }
+        else res.sendStatus(404);
     })
 
 };
