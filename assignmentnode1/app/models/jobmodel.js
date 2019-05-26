@@ -9,7 +9,8 @@ const jobs = mongoose.Schema({
     company_name:{type: String, required: true},
     salary:{type:Number,required:true},
     city:{type:String,required:true},
-    skills:{ type : Array , required:true }
+    skills:{ type : Array , required:true },
+    time : { type: Number, default: (new Date()).getTime() } 
 
 },{ versionKey: false });
 jobs.index({loc:"2dsphere"})

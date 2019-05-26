@@ -20,7 +20,9 @@ module.exports = (app) => {
 
     app.post('/postjob', job.create);
 
-    app.get('/jobs/:page', job.findAll);
+    app.get('/loginjobs/:page', job.findAll);
+    
+    app.get('/jobs/:page', job.findAlljobs);
 
     app.get('/jobs/companyjobs/:company/:page',job.company_jobs)
 
